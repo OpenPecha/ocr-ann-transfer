@@ -17,6 +17,12 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+
+dependencies = [
+  "ocr-non-bdrc @ git+https://github.com/OpenPecha/OCR-non-bdrc.git",
+]
+
+
 [project.optional-dependencies]
 dev = [
     "pytest",
