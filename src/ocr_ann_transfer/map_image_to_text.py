@@ -33,6 +33,8 @@ def map_page_texts_to_images(images_dir:Path, page_texts_dir:Path, output_file_p
         for img_path, text_path in zip(images, page_texts):
             csvwriter.writerow([img_path, text_path])
 
+    print(f"[SUCESS]: page texts to images mapped at {str(output_file_path)}")
+    return output_file_path
 
 if __name__ == "__main__":
     images_dir = Path("images/W2PD17382-I1KG81275")
