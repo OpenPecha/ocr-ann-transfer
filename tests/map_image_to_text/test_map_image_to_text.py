@@ -11,7 +11,8 @@ def test_create_page_texts():
 
     page_freq = text.count("$")
     for i in range(page_freq+1):
-        output_file = Path(DATA_DIR/ f"{volume}_{i+1}.txt")
+        file_name = f"{volume}_{i+1:05}.txt"
+        output_file = Path(DATA_DIR/ file_name)
         assert output_file.exists()
         output_file.unlink()
         
