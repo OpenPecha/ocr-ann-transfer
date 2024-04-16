@@ -8,6 +8,7 @@ def create_page_texts(text:str, volume:str, output_dir:Path):
     for i, page in enumerate(pages, 1):
         file_name = f"{volume}_{i:05}.txt"
         Path(output_dir/file_name).write_text(page, encoding="utf-8")
+    print("[SUCESS]: page texts successfully created.")
 
 
 def sort_paths_by_string(paths:List[Path]) -> List[str]:
@@ -36,8 +37,22 @@ def map_page_texts_to_images(images_dir:Path, page_texts_dir:Path, output_file_p
     print(f"[SUCESS]: page texts to images mapped at {str(output_file_path)}")
     return output_file_path
 
-if __name__ == "__main__":
-    images_dir = Path("images/W2PD17382-I1KG81275")
-    page_texts_dir = Path("page_texts")
 
-    map_page_texts_to_images(images_dir, page_texts_dir)
+def create_line_texts(page_texts_to_image_mapping:Path, output_dir:Path):
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with page_texts_to_image_mapping.open(mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            image_path = Path(row['Image Paths'])
+            page_text_path = Path(row['Page Text Paths'])
+            image_folder, image_name = Path(output_dir/image_path.stem), image_path.stem
+            image_folder.mkdir(parents=True, exist_ok=True)
+            text = page_text_path.read_text(encoding="utf-8")
+            line_texts = text.splitlines()
+            for idx, line_text in enumerate(line_texts):
+                Path(image_folder/f"{image_name}_{idx:04}.txt").write_text(line_text)
+
+    print("[SUCESS]: line texts successfully created.")
+if __name__ == "__main__":
+    create_line_texts(Path("page_texts_to_images.csv"), Path("line_texts_dir"))
