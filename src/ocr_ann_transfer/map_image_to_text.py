@@ -2,6 +2,7 @@ import csv
 from pathlib import Path 
 
 from ocr_ann_transfer.utility import sort_paths_and_get_strings
+from ocr_ann_transfer.config import add_img_path_to_mismatch
 
 def create_page_texts(text:str, volume:str, output_dir:Path):
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -70,6 +71,7 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
 
             if len(images) != len(line_texts):
                 mismatch_count += 1
+                add_img_path_to_mismatch(str(image_subdir))
 
             images = sort_paths_and_get_strings(images)
             line_texts = sort_paths_and_get_strings(line_texts)
