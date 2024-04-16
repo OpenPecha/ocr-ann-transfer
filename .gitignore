@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 OCR/
-images/
-page_texts/
+images_dir/
+page_texts_dir/
+line_texts_dir/
+cropped_images/
 
 # C extensions
 *.so

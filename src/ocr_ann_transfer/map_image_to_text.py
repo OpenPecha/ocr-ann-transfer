@@ -44,7 +44,7 @@ def create_line_texts(page_texts_to_image_mapping:Path, output_dir:Path):
         reader = csv.DictReader(file)
         for row in reader:
             image_path = Path(row['Image Paths'])
-            page_text_path = Path(row['Line Text Paths'])
+            page_text_path = Path(row['Page Text Paths'])
             image_folder, image_name = Path(output_dir/image_path.stem), image_path.stem
             image_folder.mkdir(parents=True, exist_ok=True)
             text = page_text_path.read_text(encoding="utf-8")
@@ -88,7 +88,7 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
     """ write the correct results to csv"""
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Image Paths', 'Page Text Paths'])
+        writer.writerow(['Image Paths', 'Line Text Paths'])
         for image_path, line_texts_path in zip(mapping_res["images"], mapping_res["texts"]):
             writer.writerow([image_path, line_texts_path])
 
@@ -97,6 +97,9 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
 
 
 if __name__ == "__main__":
-    cropped_images_dir = Path("cropped_images")
-    line_texts_dir = Path("line_texts_dir")
-    map_line_texts_to_images(cropped_images_dir, line_texts_dir)
+    images_dir = Path("images_dir/W2PD17382-I1KG81275")
+    page_texts_dir = Path("page_texts_dir")
+    map_page_texts_to_images(images_dir, page_texts_dir)
+    # cropped_images_dir = Path("cropped_images")
+    # line_texts_dir = Path("line_texts_dir")
+    # map_line_texts_to_images(cropped_images_dir, line_texts_dir)
