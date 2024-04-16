@@ -3,6 +3,8 @@ from typing import List, Tuple
 import xml.etree.ElementTree as ET
 from PIL import Image
 
+
+
 def parse_page_xml(xml_path:Path)->List[Tuple]:
     """
     Parses a PAGE XML file to extract text line coordinates.
@@ -33,23 +35,47 @@ def crop_image(image_path:Path, crop_coords:Tuple[int,int,int,int]):
         return None
 
 def crop_multiple_images(image_path:Path, coords_list:List[Tuple], output_dir:Path):
-    output_dir.mkdir(parents=True, exist_ok=True)
     images_folder = output_dir/ image_path.stem
     images_folder.mkdir(parents=True, exist_ok=True)
 
     for i, coords in enumerate(coords_list, start=1):
         cropped_img = crop_image(image_path, coords)
         if cropped_img:
-            cropped_img_path = images_folder / f"{str(image_path).rsplit('.', 1)[0]}_cropped_{i}.jpg"
+            cropped_img_path = images_folder / f"{image_path.name.rsplit('.', 1)[0]}_cropped_{i}.jpg"
             cropped_img.save(cropped_img_path)
             print(f"Cropped image saved to: {cropped_img_path}")
         else:
             print("Skipping saving due to cropping error.")
 
-if __name__ == "__main__":
-    xml_path = Path('I1KG812750003.xml')  
-    image_path = Path("I1KG812750003.jpg") 
-    coords_list = parse_page_xml(xml_path)
+def images_cropping_pipeline(images_dir:Path, xml_dir:Path, output_dir:Path):
+    """ xml file contains the line images coordinates """
+    images = list(images_dir.rglob("*.jpg"))
+    xmls = list(xml_dir.rglob("*.xml"))
 
+    if len(images) != len(xmls):
+        print("[ERROR]: Number of images and xml files are not equal!")
+        return 
+    
+    images = sort_paths_by_string(images)
+    xmls = sort_paths_by_string(xmls)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for image_path, xml_path in zip(images, xmls):
+        coords_list = parse_page_xml(xml_path)
+        crop_multiple_images(image_path,coords_list, output_dir)
+    
+    print(f"[SUCCESS]: images in {str(images_dir)} cropped successfully.")
+    
+
+def sort_paths_by_string(paths:List[Path]) -> List[str]:
+    """ sort paths by string and return as string"""
+    return [path for path in sorted(paths, key=lambda path: str(path))]
+
+
+if __name__ == "__main__":
+
+    images_dir = Path("/home/tenzin3/ocr-ann-transfer/images_dir/W2PD17382-I1KG81275/")
+    xml_dir = Path("/home/tenzin3/ocr-ann-transfer/images_dir/W2PD17382-I1KG81275/page")
     output_dir = Path("cropped_images")
-    crop_multiple_images(image_path, coords_list, output_dir)
+    images_cropping_pipeline(images_dir, xml_dir, output_dir)
+    
