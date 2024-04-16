@@ -3,6 +3,7 @@ from typing import List, Tuple
 import xml.etree.ElementTree as ET
 from PIL import Image
 
+from tqdm import tqdm 
 
 
 def parse_page_xml(xml_path:Path)->List[Tuple]:
@@ -43,7 +44,6 @@ def crop_multiple_images(image_path:Path, coords_list:List[Tuple], output_dir:Pa
         if cropped_img:
             cropped_img_path = images_folder / f"{image_path.name.rsplit('.', 1)[0]}_cropped_{i}.jpg"
             cropped_img.save(cropped_img_path)
-            print(f"Cropped image saved to: {cropped_img_path}")
         else:
             print("Skipping saving due to cropping error.")
 
@@ -60,7 +60,7 @@ def images_cropping_pipeline(images_dir:Path, xml_dir:Path, output_dir:Path):
     xmls = sort_paths_by_string(xmls)
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    for image_path, xml_path in zip(images, xmls):
+    for image_path, xml_path in tqdm(zip(images, xmls), total=len(images), desc="Cropping images"):
         coords_list = parse_page_xml(xml_path)
         crop_multiple_images(image_path,coords_list, output_dir)
     
