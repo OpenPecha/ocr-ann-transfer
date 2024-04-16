@@ -49,4 +49,3 @@ def test_create_line_texts():
 
 
 
-test_create_line_texts()
