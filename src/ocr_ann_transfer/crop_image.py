@@ -2,9 +2,9 @@ from pathlib import Path
 from typing import List, Tuple
 import xml.etree.ElementTree as ET
 from PIL import Image
-
 from tqdm import tqdm 
 
+from ocr_ann_transfer.utility import sort_paths_and_get_paths
 
 def parse_page_xml(xml_path:Path)->List[Tuple]:
     """
@@ -56,8 +56,8 @@ def images_cropping_pipeline(images_dir:Path, xml_dir:Path, output_dir:Path):
         print("[ERROR]: Number of images and xml files are not equal!")
         return 
     
-    images = sort_paths_by_string(images)
-    xmls = sort_paths_by_string(xmls)
+    images = sort_paths_and_get_paths(images)
+    xmls = sort_paths_and_get_paths(xmls)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     for image_path, xml_path in tqdm(zip(images, xmls), total=len(images), desc="Cropping images"):
@@ -67,9 +67,7 @@ def images_cropping_pipeline(images_dir:Path, xml_dir:Path, output_dir:Path):
     print(f"[SUCCESS]: images in {str(images_dir)} cropped successfully.")
     
 
-def sort_paths_by_string(paths:List[Path]) -> List[str]:
-    """ sort paths by string and return as string"""
-    return [path for path in sorted(paths, key=lambda path: str(path))]
+
 
 
 if __name__ == "__main__":
