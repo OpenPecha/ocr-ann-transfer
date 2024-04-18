@@ -97,9 +97,9 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
 
 
 if __name__ == "__main__":
-    images_dir = Path("images_dir/W2PD17382-I1KG81275")
-    page_texts_dir = Path("page_texts_dir")
-    map_page_texts_to_images(images_dir, page_texts_dir)
-    # cropped_images_dir = Path("cropped_images")
-    # line_texts_dir = Path("line_texts_dir")
-    # map_line_texts_to_images(cropped_images_dir, line_texts_dir)
+    # images_dir = Path("images_dir/W2PD17382-I1KG81275")
+    # page_texts_dir = Path("page_texts_dir")
+    # map_page_texts_to_images(images_dir, page_texts_dir)
+    cropped_images_dir = Path("ocr_output")
+    line_texts_dir = Path("line_texts_dir")
+    map_line_texts_to_images(cropped_images_dir, line_texts_dir)
