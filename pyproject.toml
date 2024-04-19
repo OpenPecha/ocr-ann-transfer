@@ -20,7 +20,12 @@ classifiers = [
 
 dependencies = [
   "ocr-non-bdrc @ git+https://github.com/OpenPecha/OCR-non-bdrc.git",
-  " antx"
+  "antx",
+  "Pillow",
+  "numpy",
+  "onnxruntime",
+  "scipy",
+  "opencv-python",
 ]
 
 
