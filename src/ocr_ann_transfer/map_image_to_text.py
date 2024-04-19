@@ -59,9 +59,11 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
     images_subdir = list(cropped_images_dir.iterdir())
     line_texts_subdir = list(line_texts_dir.iterdir())
 
+
     missing_line_texts = 0
     mismatch_count = 0
 
+    images_subdir.sort(key=lambda x: x.name)
     mapping_res = {"images":[], "texts":[]}
     for image_subdir in images_subdir:
         line_text_subdir = next((text for text in line_texts_subdir if text.name == image_subdir.name), None)
@@ -71,7 +73,9 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
 
             if len(images) != len(line_texts):
                 mismatch_count += 1
-                add_img_path_to_mismatch(str(image_subdir))
+                msg = f"{str(image_subdir)}, images: {len(images)}, texts: {len(line_texts)}"
+            
+                add_img_path_to_mismatch(msg)
 
             images = sort_paths_and_get_strings(images)
             line_texts = sort_paths_and_get_strings(line_texts)
@@ -97,9 +101,14 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
 
 
 if __name__ == "__main__":
-    # images_dir = Path("images_dir/W2PD17382-I1KG81275")
+    # text = Path("new_v003.txt").read_text(encoding="utf-8").replace("\n\n","$")
+    # create_page_texts(text, "3",Path("page_texts_dir"))
+    
+    # images_dir = Path("images/W2PD17382-I1KG81275")
     # page_texts_dir = Path("page_texts_dir")
     # map_page_texts_to_images(images_dir, page_texts_dir)
+
+    # create_line_texts(Path("page_texts_to_images.csv"), Path("line_texts_dir"))
     cropped_images_dir = Path("ocr_output")
     line_texts_dir = Path("line_texts_dir")
     map_line_texts_to_images(cropped_images_dir, line_texts_dir)
