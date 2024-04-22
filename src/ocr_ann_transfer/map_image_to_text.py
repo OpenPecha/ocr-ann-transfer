@@ -59,9 +59,8 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
     images_subdir = list(cropped_images_dir.iterdir())
     line_texts_subdir = list(line_texts_dir.iterdir())
 
-
-    missing_line_texts = 0
-    mismatch_count = 0
+    missing_line_texts, mismatch_count = 0, 0
+    more_images, more_texts = 0, 0
 
     images_subdir.sort(key=lambda x: x.name)
     mapping_res = {"images":[], "texts":[]}
@@ -74,8 +73,12 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
             if len(images) != len(line_texts):
                 mismatch_count += 1
                 msg = f"{str(image_subdir)}, images: {len(images)}, texts: {len(line_texts)}"
-            
                 add_img_path_to_mismatch(msg)
+                if len(images) > len(line_texts):
+                    more_images += 1
+                else:
+                    more_texts += 1
+                continue 
 
             images = sort_paths_and_get_strings(images)
             line_texts = sort_paths_and_get_strings(line_texts)
@@ -87,7 +90,8 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, outpu
             missing_line_texts += 1
     print(f"No of missing line texts subdir is {missing_line_texts}")
     print(f"No of mismatch is {mismatch_count}")
-
+    print(f"More images is {more_images}")
+    print(f"More texts is {more_texts}")
     
     """ write the correct results to csv"""
     with open(output_file_path, mode='w', newline='') as file:
