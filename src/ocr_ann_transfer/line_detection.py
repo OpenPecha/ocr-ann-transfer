@@ -28,7 +28,7 @@ def detect_lines_from_image(image_path:Path, model:LineDetection, destination_di
     destination_dir.mkdir(parents=True, exist_ok=True)
     image_dir.mkdir(parents=True, exist_ok=True)
 
-    for i, line_image in enumerate(line_images):
+    for i, line_image in enumerate(line_images, start=1):
         image = Image.fromarray(line_image)
         image.save(image_dir / f"{image_name}_{i:04}.jpg")
 
