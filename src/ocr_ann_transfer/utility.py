@@ -65,3 +65,22 @@ def get_wronged_cropped_images(cluster_group:str, cluster_result_file_path:Path=
     wronged_cropped_images = [Path(image) for image in wronged_cropped_images]
     return wronged_cropped_images
     
+
+def get_largest_image_paths(image_paths: List[Path], num_images: int) -> List[Path]:
+    """  First, check if the list is empty or num_images is zero """
+    if not image_paths or num_images == 0:
+        return []
+    """  First, check if the list is empty or num_images is zero"""
+    image_sizes = [(path.stat().st_size, path) for path in image_paths if path.is_file()]
+    """ Sort the list by size in descending order"""
+    image_sizes.sort(reverse=True, key=lambda x: x[0])
+    """ Sort the list by size in descending order"""
+    largest_image_paths = [path for _, path in image_sizes[:num_images]]
+
+    return largest_image_paths
+
+if __name__ == "__main__":
+    images = list(Path("ocr_output/I1KG812750104").rglob("*.jpg"))
+    images = get_largest_image_paths(images, 6)
+    images = sort_paths_and_get_paths(images)
+    print(images)

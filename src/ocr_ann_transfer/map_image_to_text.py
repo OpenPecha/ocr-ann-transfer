@@ -2,7 +2,7 @@ import csv
 from pathlib import Path 
 from typing import List, Optional
 
-from ocr_ann_transfer.utility import sort_paths_and_get_strings, get_wronged_cropped_images
+from ocr_ann_transfer.utility import sort_paths_and_get_strings, get_wronged_cropped_images, get_largest_image_paths
 from ocr_ann_transfer.config import add_img_path_to_mismatch
 
 def create_page_texts(text:str, volume:str, output_dir:Path):
@@ -64,7 +64,7 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
     line_texts_subdir = list(line_texts_dir.iterdir())
 
     missing_line_texts = 0
-    more_images, more_texts = 0, 0
+    more_texts = 0
 
     images_subdir.sort(key=lambda x: x.name)
     mapping_res = {"images":[], "texts":[]}
@@ -78,15 +78,19 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
             filtered_images = []
             if len(images) != len(line_texts):
                 filtered_images = [image for image in images if image not in wronged_cropped_images]
-                if len(filtered_images) != len(line_texts):
-                    if len(images) > len(line_texts):
-                        more_images += 1
-                    else:
-                        more_texts += 1
+                """ if there are more line texts, nothing to do."""
+                if len(filtered_images) < len(line_texts):
                     msg = f"{str(image_subdir)}, images: {len(images)}, texts: {len(line_texts)}"
                     add_img_path_to_mismatch(msg)
+                    more_texts += 1
                     continue
-                images = filtered_images
+                """ if there filtering was success, carry on with it."""
+                if len(filtered_images) == len(line_texts):
+                    images = filtered_images
+                else:   
+                    """ if there more line images than line texts, and filtering was unsuccessful, """
+                    """ then match with number of line texts, by sorting with size"""
+                    images = get_largest_image_paths(filtered_images, len(line_texts))
 
             images = sort_paths_and_get_strings(images)
             line_texts = sort_paths_and_get_strings(line_texts)
@@ -97,9 +101,7 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
         else:
             missing_line_texts += 1
     print(f"No of missing line texts subdir is {missing_line_texts}")
-    print(f"No of mismatch is {more_images+more_texts}")
-    print(f"More images is {more_images}")
-    print(f"More texts is {more_texts}")
+    print(f"No of mismatches (more line texts than line images) is {more_texts}")
     
     """ write the correct results to csv"""
     with open(output_file_path, mode='w', newline='') as file:
