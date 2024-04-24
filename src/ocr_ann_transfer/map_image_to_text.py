@@ -79,7 +79,7 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
             if len(images) != len(line_texts):
                 filtered_images = [image for image in images if image not in wronged_cropped_images]
                 """ if there are more line texts, nothing to do."""
-                if len(filtered_images) < len(line_texts):
+                if len(images) < len(line_texts):
                     msg = f"{str(image_subdir)}, images: {len(images)}, texts: {len(line_texts)}"
                     add_img_path_to_mismatch(msg)
                     more_texts += 1
