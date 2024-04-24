@@ -51,7 +51,7 @@ def standardize_line_texts_to_images_csv_mapping(csv_file_path:Path, batch_id:st
     for image_path, line_texts_path in zip(images_path, line_texts_path):
         id = Path(image_path).name
         inference_transcript = Path(line_texts_path).read_text(encoding="utf-8")
-        image_url = get_image_url(id, f"batch_id")
+        image_url = get_image_url(id, f"{batch_id}")
         row = [id, group_id, batch_id, state, inference_transcript, image_url]
         add_row_to_csv(row, output_file_path)
         row = []
@@ -80,7 +80,5 @@ def get_largest_image_paths(image_paths: List[Path], num_images: int) -> List[Pa
     return largest_image_paths
 
 if __name__ == "__main__":
-    images = list(Path("ocr_output/I1KG812750104").rglob("*.jpg"))
-    images = get_largest_image_paths(images, 6)
-    images = sort_paths_and_get_paths(images)
-    print(images)
+    csv_file_path = Path("line_texts_to_images.csv")
+    standardize_line_texts_to_images_csv_mapping(csv_file_path, "batch23",12)
