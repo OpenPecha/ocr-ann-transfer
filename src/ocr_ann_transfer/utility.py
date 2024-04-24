@@ -1,5 +1,6 @@
-import numpy as np 
 import csv 
+import json 
+import numpy as np 
 import pandas as pd
 from typing import List 
 from pathlib import Path 
@@ -54,3 +55,13 @@ def standardize_line_texts_to_images_csv_mapping(csv_file_path:Path, batch_id:st
         row = [id, group_id, batch_id, state, inference_transcript, image_url]
         add_row_to_csv(row, output_file_path)
         row = []
+
+
+def get_wronged_cropped_images(cluster_group:str, cluster_result_file_path:Path=Path("grouped_clusters.json"))->List[Path]:
+    grouped_clusters_path = open(cluster_result_file_path)
+    grouped_clusters = json.load(grouped_clusters_path)
+
+    wronged_cropped_images = grouped_clusters[cluster_group]
+    wronged_cropped_images = [Path(image) for image in wronged_cropped_images]
+    return wronged_cropped_images
+    
