@@ -65,6 +65,7 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
 
     missing_line_texts = 0
     more_texts = 0
+    empty_images= 0
 
     images_subdir.sort(key=lambda x: x.name)
     mapping_res = {"images":[], "texts":[]}
@@ -73,11 +74,15 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
         if line_text_subdir:
             images = list(image_subdir.rglob("*.jpg"))
             line_texts = list(line_text_subdir.rglob("*.txt"))
-
+            if len(line_texts)==0 or len(images)==0:
+                empty_images += 1
+                continue
             """ if number of cropped images is more than line texts, try filtering out the images"""
             filtered_images = []
             if len(images) != len(line_texts):
                 filtered_images = [image for image in images if image not in wronged_cropped_images]
+                if len(filtered_images) == 0:
+                    empty_images += 1
                 """ if there are more line texts, nothing to do."""
                 if len(images) < len(line_texts):
                     msg = f"{str(image_subdir)}, images: {len(images)}, texts: {len(line_texts)}"
@@ -94,15 +99,15 @@ def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wrong
 
             images = sort_paths_and_get_strings(images)
             line_texts = sort_paths_and_get_strings(line_texts)
-
-            mapping_res["images"].extend(images)
-            mapping_res["texts"].extend(line_texts)
+            if len(images) == len(line_texts):
+                mapping_res["images"].extend(images)
+                mapping_res["texts"].extend(line_texts)
 
         else:
             missing_line_texts += 1
     print(f"No of missing line texts subdir is {missing_line_texts}")
     print(f"No of mismatches (more line texts than line images) is {more_texts}")
-    
+    print(f"No of empty images is {empty_images}")
     """ write the correct results to csv"""
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
