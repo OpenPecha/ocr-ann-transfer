@@ -56,9 +56,9 @@ def create_line_texts(page_texts_to_image_mapping:Path, output_dir:Path):
     print("[SUCESS]: line texts successfully created.")
 
 
-def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, wronged_cropped_images:Optional[List[Path]]=[]):
+def map_line_texts_to_images(cropped_images_dir:Path, line_texts_dir:Path, output_file_path:Path=Path("line_texts_to_images.csv"), 
+    wronged_cropped_images:Optional[List[Path]]=[]):
     """ mapping would be saved here"""
-    output_file_path:Path=Path("line_texts_to_images.csv")
 
     images_subdir = list(cropped_images_dir.iterdir())
     line_texts_subdir = list(line_texts_dir.iterdir())
