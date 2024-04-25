@@ -3,11 +3,19 @@ __pycache__/
 *.py[cod]
 *$py.class
 OCR/
-images_dir/
+images/
+clean_text/
 page_texts_dir/
 line_texts_dir/
 cropped_images/
 ocr_output/
+clean_v003.txt 
+new_v003.txt 
+ocr_v003.txt 
+.mismatch_line_map.txt 
+clean text/
+line_texts_to_images.csv
+grouped_clusters.json 
 
 # C extensions
 *.so
